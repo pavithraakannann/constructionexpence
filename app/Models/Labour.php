@@ -10,15 +10,16 @@ class Labour extends Model
     protected $fillable = [
         'date',
         'project_id',
-        'labour_category',
+        'labour_type_id',
         'labour_name',
         'num_workers',
         'wage_per_worker',
         'total_wage',
         'payment_mode',
-        'remarks',
-        'attachment'
+        'remarks'
     ];
+    
+    protected $with = ['attachments'];
 
     protected $casts = [
         'date' => 'date',
@@ -28,15 +29,6 @@ class Labour extends Model
     ];
 
     protected $enums = [
-        'labour_category' => [
-            'Mason / Bricklayer',
-            'Carpenter',
-            'Electrician',
-            'Plumber',
-            'Helper / Labourer',
-            'Foreman / Supervisor',
-            'Other'
-        ],
         'payment_mode' => [
             'Cash',
             'UPI',
@@ -49,10 +41,18 @@ class Labour extends Model
     {
         return $this->belongsTo(Project::class);
     }
-
-    public function getLabourCategoryOptions()
+    
+    public function labourType()
     {
-        return $this->enums['labour_category'];
+        return $this->belongsTo(LabourType::class);
+    }
+    
+    /**
+     * Get all attachments for the labour record.
+     */
+    public function attachments()
+    {
+        return $this->hasMany(LabourAttachment::class);
     }
 
     public function getPaymentModeOptions()

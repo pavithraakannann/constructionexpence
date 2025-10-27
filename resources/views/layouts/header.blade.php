@@ -55,9 +55,16 @@
 
                     <div class="dropdown-menu dropdown-menu-end header-language-scrollable"
                         aria-labelledby="accountNavbarDropdown">
-                        <a class="dropdown-item" href="{{ route('profile.view') }}">Profile</a>
+                        <a class="dropdown-item" href="{{ route('profile.view') }}">
+                            <i class="ri-user-line me-2"></i> Profile
+                        </a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Sign out</a>
+                        <form method="POST" action="{{ route('logout') }}" class="d-inline">
+                            @csrf
+                            <button type="submit" class="dropdown-item">
+                                <i class="ri-logout-box-line me-2"></i> Sign out
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>

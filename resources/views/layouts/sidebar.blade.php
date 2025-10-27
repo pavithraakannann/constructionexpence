@@ -1,7 +1,7 @@
 <aside class="app-sidebar">
     <div class="app-sidebar-logo px-6 justify-content-center align-items-center">
         <a href="{{ route('dashboard') }}">
-            <h1 class="text-primary fw-bold">CEMS</h1>
+            <h4 class="text-primary fw-bold">CEMS</h4>
             <!-- <img height="35" class="app-sidebar-logo-default" alt="Logo" src="assets/images/light-logo.png">
             <img height="40" class="app-sidebar-logo-minimize" alt="Logo" src="assets/images/Favicon.png"> -->
         </a>
@@ -15,13 +15,17 @@
                     <span class="side-menu__label" data-lang="hr-dashboards">Dashboards</span>
                 </a>
             </li>
-            <li class="menu-title" role="presentation" data-lang="hr-title-applications">Project</li>
-            <li class="slide">
-                <a href="{{ route('projects.index') }}" class="side-menu__item {{ request()->routeIs('projects.*') ? 'active' : '' }}" role="menuitem">
-                    <span class="side_menu_icon"><i class="ri-layout-line"></i></span>
-                    <span class="side-menu__label" data-lang="hr-layout">Projects List</span>
-                </a>
-            </li>
+              <li class="menu-title" role="presentation" data-lang="hr-title-applications">Project</li>
+            @auth
+                @if(auth()->user()->isAdmin())
+                <li class="slide">
+                    <a href="{{ route('projects.index') }}" class="side-menu__item {{ request()->routeIs('projects.*') ? 'active' : '' }}" role="menuitem">
+                        <span class="side_menu_icon"><i class="ri-layout-line"></i></span>
+                        <span class="side-menu__label" data-lang="hr-layout">Projects List</span>
+                    </a>
+                </li>
+                @endif
+            @endauth
             <li class="slide">
                 <a href="{{ route('labours.index') }}" class="side-menu__item {{ request()->routeIs('labours.*') ? 'active' : '' }}" role="menuitem">
                     <span class="side_menu_icon"><i class="bi bi-person-add"></i></span>
@@ -40,13 +44,30 @@
                     <span class="side-menu__label" data-lang="hr-layout">Advance List</span>
                 </a>
             </li>
+            <li class="menu-title" role="presentation" data-lang="hr-title-applications">Masters</li>
             <li class="slide">
                 <a href="{{ route('materialtypes.index') }}" class="side-menu__item {{ request()->routeIs('materialtypes.*') ? 'active' : '' }}" role="menuitem">
                     <span class="side_menu_icon"><i class="ri-pantone-line"></i></span>
-                    <span class="side-menu__label" data-lang="hr-layout">Material Types List</span>
+                    <span class="side-menu__label" data-lang="hr-layout">Material Types</span>
                 </a>
             </li>
-
+            <li class="slide">
+                <a href="{{ route('labourtypes.index') }}" class="side-menu__item {{ request()->routeIs('labourtypes.*') ? 'active' : '' }}" role="menuitem">
+                    <span class="side_menu_icon"><i class="ri-group-line"></i></span>
+                    <span class="side-menu__label">Labour Types</span>
+                </a>
+            </li>
+            @auth
+                @if(auth()->user()->isAdmin())
+                <li class="menu-title" role="presentation" data-lang="hr-title-applications">User Management</li>
+                <li class="slide">
+                    <a href="{{ route('users.index') }}" class="side-menu__item {{ request()->routeIs('users.*') ? 'active' : '' }}" role="menuitem">
+                        <span class="side_menu_icon"><i class="ri-shield-user-line"></i></span>
+                        <span class="side-menu__label">Manage Users</span>
+                    </a>
+                </li>
+                @endif
+            @endauth
         </ul>
     </nav>
 </aside>
@@ -79,13 +100,17 @@
                             <span class="side-menu__label" data-lang="hr-dashboards">Dashboards</span>
                         </a>
                     </li>
-                    <li class="menu-title" role="presentation" data-lang="hr-title-applications">Project</li>
-                    <li class="slide">
-                        <a href="{{ route('projects.index') }}" class="side-menu__item {{ request()->routeIs('projects.*') ? 'active' : '' }}" role="menuitem">
-                            <span class="side_menu_icon"><i class="ri-layout-line"></i></span>
-                            <span class="side-menu__label" data-lang="hr-layout">Projects List</span>
-                        </a>
-                    </li>
+                    @auth
+                        @if(auth()->user()->isAdmin())
+                        <li class="menu-title" role="presentation" data-lang="hr-title-applications">Project</li>
+                        <li class="slide">
+                            <a href="{{ route('projects.index') }}" class="side-menu__item {{ request()->routeIs('projects.*') ? 'active' : '' }}" role="menuitem">
+                                <span class="side_menu_icon"><i class="ri-layout-line"></i></span>
+                                <span class="side-menu__label" data-lang="hr-layout">Projects List</span>
+                            </a>
+                        </li>
+                        @endif
+                    @endauth
                     <li class="slide">
                         <a href="{{ route('labours.index') }}" class="side-menu__item {{ request()->routeIs('labours.*') ? 'active' : '' }}" role="menuitem">
                             <span class="side_menu_icon"><i class="bi bi-person-add"></i></span>
@@ -96,6 +121,12 @@
                         <a href="{{ route('materials.index') }}" class="side-menu__item {{ request()->routeIs('materials.*') ? 'active' : '' }}" role="menuitem">
                             <span class="side_menu_icon"><i class="ri-pantone-line"></i></span>
                             <span class="side-menu__label" data-lang="hr-layout">Materials List</span>
+                        </a>
+                    </li>
+                    <li class="slide">
+                        <a href="{{ route('labourtypes.index') }}" class="side-menu__item {{ request()->routeIs('labourtypes.*') ? 'active' : '' }}" role="menuitem">
+                            <span class="side_menu_icon"><i class="ri-group-line"></i></span>
+                            <span class="side-menu__label">Labour Types</span>
                         </a>
                     </li>
                     <li class="slide">
@@ -110,7 +141,23 @@
                             <span class="side-menu__label" data-lang="hr-layout">Material Types List</span>
                         </a>
                     </li>
-
+                    <li class="slide">
+                        <a href="{{ route('labourtypes.index') }}" class="side-menu__item {{ request()->routeIs('labourtypes.*') ? 'active' : '' }}" role="menuitem">
+                            <span class="side_menu_icon"><i class="ri-group-line"></i></span>
+                            <span class="side-menu__label">Labour Types</span>
+                        </a>
+                    </li>
+                    @auth
+                        @if(auth()->user()->isAdmin())
+                        <li class="menu-title" role="presentation" data-lang="hr-title-applications">User Management</li>
+                        <li class="slide">
+                            <a href="{{ route('users.index') }}" class="side-menu__item {{ request()->routeIs('users.*') ? 'active' : '' }}" role="menuitem">
+                                <span class="side_menu_icon"><i class="ri-shield-user-line"></i></span>
+                                <span class="side-menu__label">Manage Users</span>
+                            </a>
+                        </li>
+                        @endif
+                    @endauth
                 </ul>
             </nav>
         </aside>

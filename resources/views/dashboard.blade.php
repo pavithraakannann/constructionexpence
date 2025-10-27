@@ -19,11 +19,6 @@
           </ol>
         </nav>
       </div>
-      <div class="d-flex my-xl-auto align-items-center flex-wrap flex-shrink-0">
-        <a href="apps-product-create.html" class="btn btn-sm btn-light-primary">
-          Add Product
-        </a>
-      </div>
     </div>
     <!-- end page title -->
     <div class="e-commerce-dashboard">

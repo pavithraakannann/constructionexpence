@@ -46,9 +46,9 @@
                                 <select class="form-select @error('labour_category') is-invalid @enderror" 
                                         id="labour_category" name="labour_category" required>
                                     <option value="">Select Category</option>
-                                    @foreach($labourCategories as $category)
-                                        <option value="{{ $category }}" {{ old('labour_category') == $category ? 'selected' : '' }}>
-                                            {{ $category }}
+                                    @foreach($labourTypes as $labourType)
+                                        <option value="{{ $labourType->id }}" {{ old('labour_category') == $labourType->id ? 'selected' : '' }}>
+                                            {{ $labourType->name }} ({{ $labourType->standard_rate }} ₹/{{ $labourType->unit }})
                                         </option>
                                     @endforeach
                                 </select>
@@ -111,15 +111,20 @@
                                 @enderror
                             </div>
 
-                            <!-- Attachment -->
-                            <div class="col-md-6">
-                                <label for="attachment" class="form-label">Attachment (Optional)</label>
-                                <input type="file" class="form-control @error('attachment') is-invalid @enderror" 
-                                       id="attachment" name="attachment" accept="image/*,.pdf,.doc,.docx">
-                                <div class="form-text">Max file size: 2MB. Allowed types: jpg, jpeg, png, pdf, doc, docx</div>
-                                @error('attachment')
+                            <!-- Attachments -->
+                            <div class="col-12">
+                                <label for="attachments" class="form-label">Attachments (Optional)</label>
+                                <input type="file" class="form-control @error('attachments') is-invalid @enderror" 
+                                       id="attachments" name="attachments[]" multiple 
+                                       accept="image/*,.pdf,.doc,.docx">
+                                <div class="form-text">
+                                    Max file size: 2MB per file. Allowed types: jpg, jpeg, png, pdf, doc, docx.
+                                    You can select multiple files.
+                                </div>
+                                @error('attachments.*')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
+                                <div id="filePreview" class="mt-2 row g-2"></div>
                             </div>
 
                             <!-- Remarks -->
@@ -151,16 +156,56 @@
     </div>
 </div>
 
+@push('styles')
+<style>
+    .file-preview {
+        position: relative;
+        width: 100px;
+        height: 100px;
+        margin: 5px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+    .file-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .remove-file {
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        background: rgba(0,0,0,0.5);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+    .file-preview-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+    }
+</style>
+@endpush
+
 @push('scripts')
 <script>
-    // Auto-calculate total wage
     document.addEventListener('DOMContentLoaded', function() {
+        // Auto-calculate total wage
         const numWorkers = document.getElementById('num_workers');
         const wagePerWorker = document.getElementById('wage_per_worker');
         const totalWage = document.getElementById('total_wage');
 
         function calculateTotal() {
-            if (numWorkers.value && wagePerWorker.value) {
+            if (numWorkers && wagePerWorker && numWorkers.value && wagePerWorker.value) {
                 const total = parseFloat(numWorkers.value) * parseFloat(wagePerWorker.value);
                 if (totalWage) {
                     totalWage.value = total.toFixed(2);
@@ -168,10 +213,77 @@
             }
         }
 
-        numWorkers.addEventListener('change', calculateTotal);
-        numWorkers.addEventListener('input', calculateTotal);
-        wagePerWorker.addEventListener('change', calculateTotal);
-        wagePerWorker.addEventListener('input', calculateTotal);
+        if (numWorkers && wagePerWorker) {
+            numWorkers.addEventListener('change', calculateTotal);
+            numWorkers.addEventListener('input', calculateTotal);
+            wagePerWorker.addEventListener('change', calculateTotal);
+            wagePerWorker.addEventListener('input', calculateTotal);
+        }
+
+        // File preview functionality
+        const fileInput = document.getElementById('attachments');
+        const filePreview = document.getElementById('filePreview');
+        const filesArray = [];
+
+        if (fileInput) {
+            fileInput.addEventListener('change', function(e) {
+                const files = e.target.files;
+                filePreview.innerHTML = '';
+                
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    
+                    if (!file.type.match('image.*')) {
+                        continue;
+                    }
+                    
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        const previewContainer = document.createElement('div');
+                        previewContainer.className = 'col-6 col-sm-4 col-md-3 col-lg-2';
+                        
+                        const previewDiv = document.createElement('div');
+                        previewDiv.className = 'file-preview';
+                        
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.className = 'img-thumbnail';
+                        
+                        const removeBtn = document.createElement('button');
+                        removeBtn.type = 'button';
+                        removeBtn.className = 'remove-file';
+                        removeBtn.innerHTML = '&times;';
+                        removeBtn.onclick = function() {
+                            // Remove the file from the file input
+                            const dt = new DataTransfer();
+                            const input = fileInput;
+                            const { files } = input;
+                            
+                            for (let j = 0; j < files.length; j++) {
+                                if (j !== i) {
+                                    dt.items.add(files[j]);
+                                }
+                            }
+                            
+                            input.files = dt.files;
+                            previewContainer.remove();
+                            
+                            // Trigger change event to update the file list
+                            const event = new Event('change');
+                            fileInput.dispatchEvent(event);
+                        };
+                        
+                        previewDiv.appendChild(img);
+                        previewDiv.appendChild(removeBtn);
+                        previewContainer.appendChild(previewDiv);
+                        filePreview.appendChild(previewContainer);
+                    };
+                    
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
     });
 </script>
 @endpush

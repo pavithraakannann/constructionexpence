@@ -48,6 +48,11 @@
                                     <td>{{ $labour->payment_mode }}</td>
                                     <td>
                                         <div class="d-flex gap-2">
+                                               <a href="{{ route('labours.view', $labour->id) }}" 
+                                               class="btn btn-sm btn-primary" 
+                                               title="View">
+                                                <i class="ri-eye-line"></i>
+                                            </a>
                                             <a href="{{ route('labours.edit', $labour->id) }}" 
                                                class="btn btn-sm btn-primary" 
                                                title="Edit">

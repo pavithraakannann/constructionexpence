@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" class="h-100" data-theme-mode-panel-active="true" data-theme="light" data-theme-mode="light" data-theme-layout="vertical" data-nav-style="menu-click" data-theme-style="modern" data-menu-styles="light" data-header-styles="light">
+
 <head>
     <meta charset="utf-8">
     <title>@yield('title', 'Construction Expense Management')</title>
@@ -29,9 +30,8 @@
     <link href="{{ asset('assets/css/app.min.css') }}" rel="stylesheet">
     <!-- Custom CSS -->
     <link href="{{ asset('assets/css/custom.min.css') }}" rel="stylesheet">
-    
-    <style>
-        /* Custom styles for sidebar and layout */
+
+    <!-- <style>
         .app-sidebar {
             position: fixed;
             top: 0;
@@ -40,7 +40,7 @@
             width: 250px;
             z-index: 1000;
             background: #fff;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
             overflow-y: auto;
         }
@@ -56,21 +56,18 @@
             .app-sidebar {
                 left: -250px;
             }
+
             .app-sidebar.show {
                 left: 0;
             }
+
             .app-wrapper {
                 margin-left: 0;
             }
         }
+    </style> -->
 
-        .app-container {
-            padding: 20px;
-            margin-top: 56px; /* Height of the header */
-        }
-    </style>
-
-    @stack('styles')
+    <!-- @stack('styles') -->
 </head>
 
 <body>
@@ -111,7 +108,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize all tooltips
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
 
@@ -140,10 +137,10 @@
 
             // Close sidebar when clicking outside on mobile
             document.addEventListener('click', function(e) {
-                if (window.innerWidth <= 991.98 && 
-                    sidebar && 
-                    !sidebar.contains(e.target) && 
-                    !e.target.closest('.sidebar-toggle') && 
+                if (window.innerWidth <= 991.98 &&
+                    sidebar &&
+                    !sidebar.contains(e.target) &&
+                    !e.target.closest('.sidebar-toggle') &&
                     !e.target.closest('.small-screen-horizontal-toggle')) {
                     sidebar.classList.remove('show');
                 }
@@ -151,11 +148,15 @@
 
             // Initialize Feather Icons
             if (typeof feather !== 'undefined') {
-                feather.replace({ width: 20, height: 20 });
+                feather.replace({
+                    width: 20,
+                    height: 20
+                });
             }
         });
     </script>
 
     @stack('scripts')
 </body>
+
 </html>

@@ -17,10 +17,18 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
+    const ROLE_ADMIN = 'admin';
+    const ROLE_USER = 'user';
+
     protected $fillable = [
         'name',
         'email',
         'password',
+        'role',
+    ];
+
+    protected $attributes = [
+        'role' => self::ROLE_USER,
     ];
 
     /**
@@ -32,6 +40,11 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    public function isAdmin(): bool
+    {
+        return $this->role === self::ROLE_ADMIN;
+    }
 
     /**
      * Get the attributes that should be cast.
